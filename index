@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NormaAI — Habla con el conocimiento de tu organización</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3S1RH56E0X"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-3S1RH56E0X');
+</script>
+<style>
+  :root {
+    --dark: #1A1916; --dark2: #1e1b2e;
+    --bg: #F7F6F2; --surface: #FFFFFF; --surface2: #F0EEE8;
+    --border: rgba(0,0,0,0.10); --border2: rgba(0,0,0,0.18);
+    --text: #1A1916; --text2: #6B6A64; --text3: #9C9A92;
+    --ocre: #C9922A; --ocre-light: #F5E6C8;
+    --norma: #8B2FC9; --norma-light: #F3E8FC; --norma-dark: #6B1FA9;
+    --norma-glow: rgba(139,47,201,0.15);
+    --radius: 10px; --radius-lg: 16px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+  /* Nav */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(26,25,22,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(139,47,201,0.2); padding: 0 24px; }
+  .nav-inner { max-width: 1080px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
+  .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo { width: 28px; height: 28px; }
+  .nav-name { font-size: 17px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+  .nav-name span { color: var(--norma); }
+  .nav-isonauta { font-size: 11px; color: rgba(255,255,255,0.3); font-family: 'DM Mono', monospace; }
+  .nav-back { font-size: 12px; color: rgba(255,255,255,0.4); text-decoration: none; transition: color .15s; }
+  .nav-back:hover { color: rgba(255,255,255,0.8); }
+  .nav-cta { font-size: 12px; font-weight: 500; padding: 7px 16px; border: 0.5px solid rgba(139,47,201,0.5); border-radius: 20px; color: var(--norma); text-decoration: none; transition: all .15s; background: rgba(139,47,201,0.08); }
+  .nav-cta:hover { background: rgba(139,47,201,0.18); }
+
+  /* Hero */
+  .hero { min-height: 100vh; background: var(--dark); display: flex; flex-direction: column; justify-content: center; padding: 120px 24px 80px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(139,47,201,0.12) 0%, transparent 70%); pointer-events: none; }
+  .hero::after { content: ''; position: absolute; bottom: -100px; left: 200px; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(201,146,42,0.05) 0%, transparent 70%); pointer-events: none; }
+  .hero-inner { max-width: 1080px; margin: 0 auto; position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+  @media (max-width:768px) { .hero-inner { grid-template-columns: 1fr; gap: 40px; } }
+
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(139,47,201,0.12); border: 0.5px solid rgba(139,47,201,0.3); border-radius: 20px; padding: 5px 14px; margin-bottom: 24px; }
+  .hero-badge span { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--norma); text-transform: uppercase; letter-spacing: 0.1em; }
+  .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--norma); animation: pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
+
+  .hero-title { font-size: clamp(36px, 5vw, 64px); font-weight: 600; letter-spacing: -1.5px; color: #F7F6F2; line-height: 1.05; margin-bottom: 10px; }
+  .hero-title em { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; color: var(--norma); }
+  .hero-sub { font-size: 16px; color: rgba(247,246,242,0.35); font-weight: 300; line-height: 1.7; margin-bottom: 12px; }
+  .hero-tagline { font-size: 14px; color: rgba(139,47,201,0.7); font-family: 'DM Mono', monospace; margin-bottom: 36px; letter-spacing: 0.03em; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-norma { font-size: 13px; font-weight: 500; padding: 12px 28px; background: var(--norma); border: none; border-radius: 24px; color: #fff; cursor: pointer; text-decoration: none; transition: opacity .15s; }
+  .btn-norma:hover { opacity: 0.85; }
+  .btn-ghost { font-size: 13px; padding: 12px 28px; background: transparent; border: 0.5px solid rgba(255,255,255,0.18); border-radius: 24px; color: rgba(255,255,255,0.55); cursor: pointer; text-decoration: none; transition: all .15s; }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.35); color: rgba(255,255,255,0.8); }
+
+  /* Mockup chat hero */
+  .hero-mockup { background: #fff; border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(139,47,201,0.2); }
+  .mockup-header { background: #f8f7ff; border-bottom: 1px solid rgba(139,47,201,0.1); padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
+  .mockup-logo { font-size: 14px; font-weight: 600; color: var(--norma); display: flex; align-items: center; gap: 6px; }
+  .mockup-logo svg { width: 18px; height: 18px; }
+  .mockup-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .mockup-msg { font-size: 12px; line-height: 1.55; }
+  .mockup-msg.user { background: #f0f0f0; border-radius: 10px 10px 2px 10px; padding: 10px 12px; color: #333; align-self: flex-end; max-width: 85%; }
+  .mockup-msg.norma { background: #f8f4ff; border: 0.5px solid rgba(139,47,201,0.15); border-radius: 2px 10px 10px 10px; padding: 10px 12px; color: #333; max-width: 90%; }
+  .mockup-msg.norma::before { content: ''; display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--norma); margin-bottom: 6px; }
+  .mockup-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .mockup-chip { font-size: 10px; padding: 4px 10px; border: 0.5px solid rgba(139,47,201,0.3); border-radius: 12px; color: var(--norma); background: rgba(139,47,201,0.05); }
+  .mockup-input { margin: 8px 16px 16px; border: 0.5px solid rgba(139,47,201,0.2); border-radius: 20px; padding: 8px 14px; font-size: 11px; color: #999; background: #fafafa; }
+
+  /* Problema */
+  .problema { background: var(--dark2); padding: 80px 24px; border-top: 1px solid rgba(139,47,201,0.1); border-bottom: 1px solid rgba(139,47,201,0.1); }
+  .problema-inner { max-width: 1080px; margin: 0 auto; }
+  .section-eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 14px; }
+  .section-eyebrow.norma { color: rgba(139,47,201,0.7); }
+  .section-titulo { font-size: clamp(26px,3.5vw,42px); font-weight: 600; letter-spacing: -0.8px; margin-bottom: 16px; line-height: 1.15; }
+  .section-titulo.light { color: #F7F6F2; }
+  .section-titulo em { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; }
+  .section-titulo.light em { color: var(--norma); }
+  .section-desc { font-size: 15px; line-height: 1.7; max-width: 560px; margin-bottom: 40px; }
+  .section-desc.light { color: rgba(247,246,242,0.38); }
+
+  .problema-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  @media (max-width:700px) { .problema-grid { grid-template-columns: 1fr; } }
+
+  /* Mensajes WhatsApp simulados */
+  .wa-msgs { display: flex; flex-direction: column; gap: 10px; }
+  .wa-msg { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 4px 12px 12px 12px; padding: 12px 16px; font-size: 13px; color: rgba(247,246,242,0.5); line-height: 1.6; font-style: italic; position: relative; }
+  .wa-msg::before { content: ''; position: absolute; left: -1px; top: 0; width: 3px; height: 100%; background: rgba(139,47,201,0.4); border-radius: 2px 0 0 2px; }
+  .wa-problema { margin-top: 24px; padding: 20px; background: rgba(139,47,201,0.06); border: 0.5px solid rgba(139,47,201,0.15); border-radius: var(--radius-lg); }
+  .wa-problema p { font-size: 15px; color: rgba(247,246,242,0.7); line-height: 1.65; font-weight: 500; }
+  .wa-problema em { color: var(--norma); font-style: normal; }
+
+  /* Solución */
+  .seccion { padding: 80px 24px; }
+  .seccion.alt { background: var(--surface2); }
+  .seccion-inner { max-width: 1080px; margin: 0 auto; }
+
+  .solucion-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 40px; }
+  @media (max-width:700px) { .solucion-grid { grid-template-columns: 1fr; } }
+  .sol-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 28px 24px; box-shadow: var(--shadow); transition: border-color .2s; }
+  .sol-card:hover { border-color: rgba(139,47,201,0.3); }
+  .sol-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--norma); margin-bottom: 14px; opacity: 0.7; }
+  .sol-titulo { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 10px; letter-spacing: -0.2px; }
+  .sol-desc { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+  /* Cuadrante posicionamiento */
+  .cuadrante-wrap { margin-top: 40px; }
+  .cuadrante { position: relative; width: 100%; max-width: 560px; aspect-ratio: 1; border: 0.5px solid var(--border2); border-radius: var(--radius-lg); background: var(--surface); overflow: hidden; }
+  .cuadrante-eje-x { position: absolute; bottom: 50%; left: 0; right: 0; height: 0.5px; background: var(--border2); }
+  .cuadrante-eje-y { position: absolute; left: 50%; top: 0; bottom: 0; width: 0.5px; background: var(--border2); }
+  .cuadrante-label { position: absolute; font-size: 10px; font-family: 'DM Mono', monospace; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .cuadrante-item { position: absolute; transform: translate(-50%,-50%); text-align: center; }
+  .cuadrante-dot { width: 10px; height: 10px; border-radius: 50%; margin: 0 auto 5px; }
+  .cuadrante-item-label { font-size: 11px; color: var(--text2); white-space: nowrap; font-family: 'DM Mono', monospace; }
+  .cuadrante-norma { position: absolute; transform: translate(-50%,-50%); text-align: center; }
+  .cuadrante-norma-dot { width: 20px; height: 20px; border-radius: 50%; background: var(--norma); margin: 0 auto 6px; box-shadow: 0 0 16px rgba(139,47,201,0.5); }
+  .cuadrante-norma-label { font-size: 13px; font-weight: 600; color: var(--norma); white-space: nowrap; }
+
+  /* Capacidades */
+  .caps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 14px; margin-top: 40px; }
+  .cap-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 22px 20px; box-shadow: var(--shadow); }
+  .cap-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--norma-light); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+  .cap-titulo { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .cap-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+  /* Proceso */
+  .proceso-steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; margin-top: 40px; position: relative; }
+  @media (max-width:700px) { .proceso-steps { grid-template-columns: 1fr 1fr; gap: 16px; } }
+  .proceso-steps::before { content: ''; position: absolute; top: 24px; left: 12.5%; right: 12.5%; height: 1px; background: linear-gradient(to right, transparent, rgba(139,47,201,0.3), transparent); }
+  @media (max-width:700px) { .proceso-steps::before { display: none; } }
+  .paso { text-align: center; padding: 0 12px; }
+  .paso-num { width: 48px; height: 48px; border-radius: 50%; background: var(--norma-light); border: 2px solid rgba(139,47,201,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 16px; font-weight: 600; color: var(--norma); }
+  .paso-titulo { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .paso-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+  /* CTA */
+  .cta-final { background: var(--dark); padding: 80px 24px; text-align: center; position: relative; overflow: hidden; }
+  .cta-final::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 600px; height: 300px; background: radial-gradient(ellipse, rgba(139,47,201,0.12) 0%, transparent 70%); pointer-events: none; }
+  .cta-final-inner { max-width: 600px; margin: 0 auto; position: relative; z-index: 1; }
+  .cta-titulo { font-size: clamp(28px,4vw,44px); font-weight: 600; color: #F7F6F2; letter-spacing: -1px; margin-bottom: 12px; line-height: 1.1; }
+  .cta-titulo em { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; color: var(--norma); }
+  .cta-desc { font-size: 14px; color: rgba(247,246,242,0.3); margin-bottom: 32px; line-height: 1.7; }
+  .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .cta-nota { font-size: 11px; color: rgba(255,255,255,0.2); font-family: 'DM Mono', monospace; margin-top: 16px; }
+
+  /* Footer */
+  .footer { background: #111110; padding: 20px 24px; border-top: 1px solid rgba(139,47,201,0.08); }
+  .footer-inner { max-width: 1080px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+  .footer-brand { font-size: 12px; color: var(--ocre); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+  .footer-copy { font-size: 11px; color: rgba(255,255,255,0.15); font-family: 'DM Mono', monospace; }
+
+  /* WhatsApp flotante */
+  .wa-btn { position: fixed; bottom: 28px; right: 28px; z-index: 200; width: 52px; height: 52px; border-radius: 50%; background: #25D366; box-shadow: 0 4px 16px rgba(37,211,102,0.4); display: flex; align-items: center; justify-content: center; text-decoration: none; opacity: 0; transform: translateY(16px); transition: opacity .3s, transform .3s; pointer-events: none; }
+  .wa-btn.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+  .wa-btn:hover { box-shadow: 0 6px 24px rgba(37,211,102,0.55); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <svg class="nav-logo" viewBox="0 0 32 32" fill="none">
+        <path d="M6 26V14a10 10 0 0 1 20 0v12" stroke="#8B2FC9" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="16" cy="18" r="3" fill="#8B2FC9"/>
+      </svg>
+      <span class="nav-name">Norma<span>AI</span></span>
+    </a>
+    <a href="/" class="nav-back">← Isonauta</a>
+    <a href="#contacto" class="nav-cta">Solicitar propuesta</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">
+        <span class="dot"></span>
+        <span>Solución IA para SGC</span>
+      </div>
+      <h1 class="hero-title">Habla con el<br>conocimiento de tu<br><em>organización</em></h1>
+      <p class="hero-sub">La certificación ISO se transforma en una base de conocimiento con la que tus colaboradores pueden conversar en lenguaje natural.</p>
+      <p class="hero-tagline">La norma y la operación — una sola cosa.</p>
+      <div class="hero-actions">
+        <a href="#contacto" class="btn-norma">Solicitar propuesta</a>
+        <a href="#como-funciona" class="btn-ghost">Ver cómo funciona</a>
+      </div>
+    </div>
+
+    <!-- Video hero -->
+    <div style="position:relative;padding-bottom:56.25%;height:0;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(139,47,201,0.2)">
+      <iframe src="https://www.youtube.com/embed/KOXtc39copY?rel=0&modestbranding=1" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:none"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- El problema -->
+<section class="problema">
+  <div class="problema-inner">
+    <div class="problema-grid">
+      <div>
+        <p class="section-eyebrow norma">El problema</p>
+        <h2 class="section-titulo light">La norma y la operación<br>corren por <em>carriles paralelos</em></h2>
+        <p class="section-desc light">Las organizaciones certificadas invierten años organizando documentación que nadie usa como debería. El conocimiento está ahí — pero nadie sabe cómo acceder a él en el momento correcto.</p>
+        <div class="wa-problema">
+          <p>¿Cómo hacer que la <em>norma y la operación sean una sola cosa</em>?</p>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;font-family:'DM Mono',monospace;color:rgba(139,47,201,0.5);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px">Conversaciones reales en organizaciones certificadas</p>
+        <div class="wa-msgs">
+          <div class="wa-msg">¿Alguien se acuerda cuáles son los criterios de inspección para el acceso de las camionetas a la faena?</div>
+          <div class="wa-msg">¿Te sabes el protocolo para certificar el acceso de camiones al centro de distribución para cargarlos con el tonelaje de explosivos de la OC?</div>
+          <div class="wa-msg">¡Hay que renovar el documento de consentimiento que firman los proveedores para ingresar a la planta! ¿Alguien sabe dónde está el original que exige la norma?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- La solución -->
+<section class="seccion" id="como-funciona">
+  <div class="seccion-inner">
+    <p class="section-eyebrow norma">La solución</p>
+    <h2 class="section-titulo">Dos niveles de <em>conocimiento</em></h2>
+    <p class="section-desc" style="color:var(--text2)">NormaAI opera en dos modos complementarios que cubren todas las necesidades de conocimiento normativo en tu organización.</p>
+    <div class="solucion-grid">
+      <div class="sol-card">
+        <p class="sol-num">Nivel 01 — Conversacional</p>
+        <p class="sol-titulo">Ayuda práctica para tareas</p>
+        <p class="sol-desc">Cada persona interactúa directamente con todo el conocimiento de la organización usando lenguaje natural. Pregunta, obtiene respuesta, cita el documento fuente.</p>
+      </div>
+      <div class="sol-card">
+        <p class="sol-num">Nivel 02 — Aprendizaje</p>
+        <p class="sol-titulo">Sesiones para mantener el conocimiento activo</p>
+        <p class="sol-desc">El sistema identifica dominios de conocimiento, diseña preguntas orientadas a procesos mentales específicos y orquesta sesiones de práctica personalizadas.</p>
+      </div>
+      <div class="sol-card" style="border-color:rgba(139,47,201,0.25)">
+        <p class="sol-num">Resultado</p>
+        <p class="sol-titulo">Visibilidad y evidencia permanente</p>
+        <p class="sol-desc">El sistema regula sesiones de práctica para cada persona y genera evidencia visible sobre la capacitación continua — auditable y trazable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Posicionamiento -->
+<section class="seccion alt">
+  <div class="seccion-inner">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center">
+      <div>
+        <p class="section-eyebrow norma">Por qué NormaAI</p>
+        <h2 class="section-titulo">Fácil de usar.<br><em>Alta inteligencia</em>.</h2>
+        <p class="section-desc" style="color:var(--text2)">OneDrive, Google Drive y los software de gestión documental organizan archivos. NormaAI hace que las personas puedan hablar con esos archivos. No es un repositorio — es un interlocutor.</p>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:24px">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius)">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--norma);flex-shrink:0"></div>
+            <p style="font-size:13px;color:var(--text2)">Interfaz conversacional en lenguaje natural</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius)">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--norma);flex-shrink:0"></div>
+            <p style="font-size:13px;color:var(--text2)">Entrenada con los documentos propios de tu organización</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius)">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--norma);flex-shrink:0"></div>
+            <p style="font-size:13px;color:var(--text2)">Diseñada nativamente para normas ISO</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius)">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--norma);flex-shrink:0"></div>
+            <p style="font-size:13px;color:var(--text2)">Sesiones de práctica que mantienen el conocimiento activo</p>
+          </div>
+        </div>
+      </div>
+      <div class="cuadrante-wrap">
+        <div class="cuadrante">
+          <div class="cuadrante-eje-x"></div>
+          <div class="cuadrante-eje-y"></div>
+          <!-- Labels ejes -->
+          <span class="cuadrante-label" style="top:8px;left:50%;transform:translateX(-50%)">Fácil de usar</span>
+          <span class="cuadrante-label" style="bottom:8px;left:50%;transform:translateX(-50%)">Complicado de usar</span>
+          <span class="cuadrante-label" style="top:50%;right:8px;transform:translateY(-50%) rotate(90deg);transform-origin:right center">Alta IA</span>
+          <span class="cuadrante-label" style="top:50%;left:8px;transform:translateY(-50%) rotate(-90deg);transform-origin:left center">Baja IA</span>
+          <!-- Competidores -->
+          <div class="cuadrante-item" style="top:30%;left:25%">
+            <div class="cuadrante-dot" style="background:#4285F4"></div>
+            <span class="cuadrante-item-label">Google Drive</span>
+          </div>
+          <div class="cuadrante-item" style="top:30%;left:42%">
+            <div class="cuadrante-dot" style="background:#0078D4"></div>
+            <span class="cuadrante-item-label">OneDrive</span>
+          </div>
+          <div class="cuadrante-item" style="top:70%;left:30%">
+            <div class="cuadrante-dot" style="background:#888"></div>
+            <span class="cuadrante-item-label">Sist. Documental</span>
+          </div>
+          <div class="cuadrante-item" style="top:65%;left:72%">
+            <div class="cuadrante-dot" style="background:#888"></div>
+            <span class="cuadrante-item-label">Plat. Entrenamiento</span>
+          </div>
+          <!-- NormaAI destacado -->
+          <div class="cuadrante-norma" style="top:22%;left:76%">
+            <div class="cuadrante-norma-dot"></div>
+            <span class="cuadrante-norma-label">NormaAI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Capacidades -->
+<section class="seccion">
+  <div class="seccion-inner">
+    <p class="section-eyebrow norma">Capacidades</p>
+    <h2 class="section-titulo">Lo que <em>NormaAI</em> hace</h2>
+    <div class="caps-grid">
+      <div class="cap-card">
+        <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B2FC9" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <p class="cap-titulo">Consultas en lenguaje natural</p>
+        <p class="cap-desc">Responde preguntas sobre requisitos ISO, procedimientos internos y protocolos citando el documento fuente.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B2FC9" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <p class="cap-titulo">Búsqueda y gestión documental</p>
+        <p class="cap-desc">Accede a manuales, procedimientos e informes de auditoría. Integración con SharePoint, Google Drive y más.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B2FC9" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <p class="cap-titulo">Generador de documentación</p>
+        <p class="cap-desc">Crea borradores de políticas, procedimientos y registros de auditoría desde plantillas y datos existentes.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B2FC9" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <p class="cap-titulo">Auditor virtual</p>
+        <p class="cap-desc">Listas de verificación para auditorías internas, análisis de respuestas y sugerencias de acciones correctivas.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B2FC9" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <p class="cap-titulo">Sesiones de práctica</p>
+        <p class="cap-desc">Orquesta pulsos de aprendizaje personalizados por persona y rol para mantener el conocimiento activo.</p>
+      </div>
+      <div class="cap-card">
+        <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B2FC9" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <p class="cap-titulo">Tablero de control</p>
+        <p class="cap-desc">Indicadores de uso, progreso por usuario, ranking de topics y evidencia de capacitación continua.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Proceso implementación -->
+<section class="seccion alt" id="implementacion">
+  <div class="seccion-inner">
+    <p class="section-eyebrow norma">Implementación</p>
+    <h2 class="section-titulo">De los documentos al <em>diálogo</em></h2>
+    <p class="section-desc" style="color:var(--text2)">El proceso de implementación típico dura 4 meses. Desde los documentos hasta que tus colaboradores conversan con el sistema.</p>
+    <div class="proceso-steps">
+      <div class="paso">
+        <div class="paso-num">1</div>
+        <p class="paso-titulo">Procesamiento documental</p>
+        <p class="paso-desc">Revisión y entrenamiento de la IA con la documentación ISO de la organización.</p>
+      </div>
+      <div class="paso">
+        <div class="paso-num">2</div>
+        <p class="paso-titulo">Base de conocimiento</p>
+        <p class="paso-desc">Taxonomía validada, infraestructura cloud privada, alta disponibilidad.</p>
+      </div>
+      <div class="paso">
+        <div class="paso-num">3</div>
+        <p class="paso-titulo">Desarrollo e integración</p>
+        <p class="paso-desc">Frontend conversacional, backend, integraciones con sistemas existentes.</p>
+      </div>
+      <div class="paso">
+        <div class="paso-num">4</div>
+        <p class="paso-titulo">Despliegue y acompañamiento</p>
+        <p class="paso-desc">Producción supervisada, monitoreo activo y evolución continua del sistema.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-final" id="contacto">
+  <div class="cta-final-inner">
+    <h2 class="cta-titulo">¿Tu organización lista<br>para <em>conversar</em> con su norma?</h2>
+    <p class="cta-desc">Cada organización ISO tiene un proyecto NormaAI único. Cuéntanos tu contexto y preparamos una propuesta.</p>
+    <div class="cta-btns">
+      <a id="cta-wa" href="#" target="_blank" class="btn-norma">Escribir por WhatsApp</a>
+      <a id="cta-email" href="#" class="btn-ghost">Solicitar propuesta por email</a>
+    </div>
+    <p class="cta-nota">Proyecto de desarrollo · 4 meses · Infraestructura cloud incluida</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-brand">Isonauta · NormaAI</span>
+    <span class="footer-copy">© 2026 · Procesus · Comunicación e Inteligencia Artificial</span>
+  </div>
+</footer>
+
+<a class="wa-btn" id="wa-btn" href="#" target="_blank">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.096.541 4.064 1.487 5.782L0 24l6.401-1.681A11.93 11.93 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.003-1.366l-.359-.214-3.8.997 1.015-3.694-.235-.38A9.787 9.787 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+</a>
+
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+  var wa = 'https://wa.me/56981571712?text=Hola%20Cristián%2C%20me%20interesa%20NormaAI%20para%20mi%20organización';
+  var mail = 'mailto:' + 'cristian' + '@' + 'cristiancordero.cl' + '?subject=Propuesta%20NormaAI';
+  document.getElementById('wa-btn').href = wa;
+  document.getElementById('cta-wa').href = wa;
+  document.getElementById('cta-email').href = mail;
+});
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('wa-btn');
+  if(window.scrollY > 300) btn.classList.add('visible');
+  else btn.classList.remove('visible');
+}, { passive: true });
+</script>
+</body>
+</html>
